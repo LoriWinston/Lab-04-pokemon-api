@@ -1,75 +1,72 @@
 import React from 'react'
+import request from 'superagent';
 import '../App.css';
-import pokeData from '../Data'
-import PokeList from './PokeList';
-import Dropdown from './Dropdown';
-//import Sort from './Sort';
+import Spinner from '../Spinner';
 
 
 export default class SearchPage extends React.Component {
 
     state = {
-        pokemonArray: pokeData,
-        type_1A: '',
-        type_2: '',
-        sortBy: '',
+        pokemon: [],
         query: '',
-        _id:'',
-        order: 'ascending'
-        
+        loading: false,
       }
  
-  handletype_1AChange = (e) => { this.setState({ type_1A: e.target.value})} 
-
-  handletype_2Change = (e) => { this.setState({ type_2: e.target.value })}
-
-  handleSortChange = (e) => { this.setState({ sortBy: e.target.value })}
-
-  handleInputChange = (e) => { this.setState({ query: e.target.value })}
-
-  handleAscendingChange = (e) => { this.setState({ order: e.target.value })}
-  render() {
-
-
-    if(this.state.sortBy){
+      componentDidMount = async () => {
+        await this.fetchPokemon();
+      }
+    
+      fetchPokemon = async () => {
+        console.log('the user clicked search!', this.state.query)
+        
+        this.setState({ loading: true });
+    
        
-//SORT
-if (this.state.order === 'ascending'){
-    this.state.pokemonArray.sort((a,b) => a[this.state.sortBy].localeCompare(b[this.state.sortBy]))
-} else {
-    this.state.pokemonArray.sort((a,b) => b[this.state.sortBy].localeCompare(a[this.state.sortBy]))
-}
+        const data = await request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}`);
+    
+        this.setState({ 
+          loading: false,
+          pokemon: data.body.results,
+        });
+      }
+    
+ 
+      handleClick = async () => {
+        await this.fetchPokemon();
+      }
+    
+      handleQueryChange = async (e) => {
+        console.log('the query changed', e.target.value)
+        this.setState({ 
+          query: e.target.value,
+         });
+      }
+      render() {
+    
+        return (
+          <>
+          <label>
+            Search
+             <input onChange={this.handleQueryChange} />
+          </label>
+  
+          <button onClick={this.handleClick}>Go!</button>
+        
+          <div>
+            {}
+            { 
+            this.state.loading 
+            ? <Spinner />
+            : this.state.pokemon.map(poke => 
+              <div key={poke.pokemon}>
+                <div>
+                <img src={poke.url_image} alt="poke" />
+                </div>
+                {poke.pokemon} : {poke.type_1}
+              </div>)
+            }
+          </div>
+         </>
+        );
     }
-
-      const filteredPoke = this.state.pokemonArray.filter((newPoke) => {
-          if(!this.state.query){
-              return true;
-          }
-
-          if (this.state.query){
-              if(newPoke.pokemon.includes(this.state.query)) return true;
-          }
-
-        return false; 
-      });
-
-
-      return (
-        <>
-          <input onChange={this.handleInputChange} placeholder='search bar'/>
-          
-          <select onChange={this.handleAscendingChange}>
-            <option value="ascending">ascending</option>
-            <option value="descending">descending</option>
-          </select>
-          <select onChange={this.handleSortChange}>
-            <option value="shape">shape</option>
-            <option value="pokemon">pokemon</option>
-          </select>
-
-
-           <PokeList filteredPoke={filteredPoke} />
-        </>
-    );
   }
-}
