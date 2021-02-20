@@ -7,7 +7,7 @@ class PokeList extends React.Component {
 
       return (
         <ul>
-          { this.props.filteredPoke.map(booger => 
+          { this.props.pokemonData.map(booger => 
           <PokeItem
             key={booger._id}
             pokemon={booger.pokemon}

@@ -13,7 +13,8 @@ export default class SearchPage extends React.Component {
     perPage: 10,
     query: '',
     loading: false,
-    currentPage: 1
+    currentPage: 1,
+    direction: 'asc'
   }
  
       componentDidMount = async () => {
@@ -26,8 +27,8 @@ export default class SearchPage extends React.Component {
         this.setState({ loading: true });
     
        
-        const data = await request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}&page=${this.state.currentPage}&perPage=${this.state.perPage}`);
-    
+        const data = await request.get(`https://pokedex-alchemy.herokuapp.com/api/pokedex?pokemon=${this.state.query}&page=${this.state.currentPage}&perPage=${this.state.perPage}&direction=${this.state.direction}`);
+        console.log(data.body.results)
         this.setState({ 
           loading: false,
           pokemonData: data.body.results,
@@ -50,7 +51,9 @@ export default class SearchPage extends React.Component {
       handlePerPage = (e) => {
         this.setState({ perPage: e.target.value })
       }
-    
+      handleDirection = (e) => {
+        this.setState({direction: e.target.value})
+      }
       handleNextClick = async () => {
         // go increment state
         // this unfortunately doeasn't happen immediately
@@ -93,7 +96,14 @@ export default class SearchPage extends React.Component {
                  <option value={75}>75</option>
                  <option value={100}>100</option>
                  </select>
+                 Direction:
+                 <select onChange={this.handleDirection} >
+                    <option value={'desc'} >Descend</option>
+                    <option value={'asc'} >Ascend</option>
+                </select>
+
             </label>
+           
     
             <button onClick={this.handleClick}>Go!</button>
             <h3>Page {this.state.currentPage}</h3>
