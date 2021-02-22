@@ -15,11 +15,14 @@ export default class DetailPage extends Component {
     
         this.setState({ 
           loading: false,
-          pokemon: data.body.results[0],
+          pokemonData: data.body.results[0],
         });
       }
     
     render() {
+        console.log(this.pokemonData)
+        console.log(this.data)
+        console.log(this.props.match.params.pokemonName)
         return (
             <div>
                 <h2>Welcome to the detail page!</h2>

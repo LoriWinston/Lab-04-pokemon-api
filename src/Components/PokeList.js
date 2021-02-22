@@ -16,6 +16,7 @@ class PokeList extends React.Component {
             type_2={booger.type_2}
             shape={booger.shape}
             url_image={booger.url_image}
+            id={booger._id}
         />)}
         </ul>
         )

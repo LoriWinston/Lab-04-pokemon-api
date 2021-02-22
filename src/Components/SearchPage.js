@@ -1,8 +1,10 @@
 import React from 'react'
+import { Router } from 'react-router-dom';
 import request from 'superagent';
 import '../App.css';
 import Spinner from '../Spinner';
 import PokeList from './PokeList';
+import { Link } from 'react-router-dom';
 
 
 export default class SearchPage extends React.Component {
